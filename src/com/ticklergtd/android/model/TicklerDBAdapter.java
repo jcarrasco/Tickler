@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.ticklergtd.android.model.table.*;
@@ -64,6 +65,7 @@ public class TicklerDBAdapter {
 		if(!isOpen) {
 			mDbHelper = new DatabaseHelper(mCtx);
 			mDb = mDbHelper.getWritableDatabase();
+			
 		}
 		isOpen = true;
 		return this;
@@ -75,6 +77,7 @@ public class TicklerDBAdapter {
 	}
 
 	public Cursor selectTasks(){
+		
 		return mDb.query(
 				Tasks.DATABASE_TABLE_TASKS,
 				new String[] { Tasks.KEY_TASKS_ID, Tasks.KEY_TASKS_NAME,
@@ -183,5 +186,13 @@ public class TicklerDBAdapter {
 		return mDb.rawQuery(sSql, null);
 	}
 	
-
+	public Cursor selectContext(){
+		String sSql = "";
+		
+		sSql = "select ContextsTasks.task_id, ContextsTasks.context_id, Contexts.name " + 
+				" from Tickler_ContextsTasks as ContextsTasks inner join Tickler_Contexts as Contexts on ContextsTasks.context_id = Contexts.id " +
+				" group by context_id";
+				
+		return mDb.rawQuery(sSql, null);
+	}
 }
